@@ -17,8 +17,8 @@ func TestCreateCategory(t *testing.T) {
 
 	c := v1.InventoryCategory{
 		ParentID:    3,
-		Name:        "Cat2",
-		Description: "Cat2 desc",
+		Name:        "Category 1",
+		Description: "Cat1 desc",
 	}
 
 	global.GDB = initialize.GormMysql()
@@ -27,7 +27,7 @@ func TestCreateCategory(t *testing.T) {
 	err := sqb.Create(&c)
 
 	if err != nil {
-		t.Errorf("Failed to create Cateogry: %v", err)
+		t.Errorf("Failed to create Category: %v", err)
 	}
 }
 
@@ -38,9 +38,9 @@ func TestGetCategory(t *testing.T) {
 
 	var conditions []interface{}
 	conditions = append(conditions, models.Condition{
-		ColumnName: "id",
+		ColumnName: "name",
 		Operator:   models.EQUALS,
-		Value:      "1",
+		Value:      "Category 1",
 	})
 	conditions = append(conditions, models.AND)
 	conditions = append(conditions, models.Condition{
@@ -65,9 +65,9 @@ func TestUpdateCategory(t *testing.T) {
 
 	var conditions []interface{}
 	conditions = append(conditions, models.Condition{
-		ColumnName: "id",
+		ColumnName: "name",
 		Operator:   models.EQUALS,
-		Value:      "1",
+		Value:      "Category 1",
 	})
 	conditions = append(conditions, models.AND)
 	conditions = append(conditions, models.Condition{
@@ -75,7 +75,9 @@ func TestUpdateCategory(t *testing.T) {
 		Operator:   models.EQUALS,
 		Value:      "3",
 	})
-	err := sqb.Update(&c, conditions, map[string]interface{}{"description": "updated cat1 desc "})
+
+	var updateCategory = v1.InventoryCategory{Description: "updated cat1 desc "}
+	err := sqb.Update(&c, conditions, &updateCategory)
 
 	if err != nil {
 		t.Errorf("Failed to update Cateogry: %v", err)
@@ -90,9 +92,9 @@ func TestDeleteCategory(t *testing.T) {
 
 	var conditions []interface{}
 	conditions = append(conditions, models.Condition{
-		ColumnName: "id",
+		ColumnName: "name",
 		Operator:   models.EQUALS,
-		Value:      "1",
+		Value:      "Category 1",
 	})
 	conditions = append(conditions, models.AND)
 	conditions = append(conditions, models.Condition{
@@ -107,3 +109,4 @@ func TestDeleteCategory(t *testing.T) {
 	}
 
 }
+

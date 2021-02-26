@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// InventoryCategory Model
 type InventoryCategory struct {
 	gorm.Model
 	ID          uint   `json:"id" gorm:"primaryKey;autoIncrement:true"`
@@ -19,7 +20,7 @@ func (b *InventoryCategory) TableName() string {
 	return "inventory_categories"
 }
 
-
+// InventoryCategory Model View
 type InventoryCategoryView struct {
 	ID          uint
 	ParentID    uint

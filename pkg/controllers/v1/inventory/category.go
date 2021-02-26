@@ -8,7 +8,12 @@ import (
 	"net/http"
 )
 
-//CreateInventoryCategory - Creates Inventory Categories
+/*
+Inventory Category Controller
+*/
+
+// Creates Inventory Categories
+// Expects Category in request body
 func CreateInventoryCategory(c *gin.Context) {
 	var category modelsv1.InventoryCategory
 
@@ -23,14 +28,14 @@ func CreateInventoryCategory(c *gin.Context) {
 	}
 
 	sqb := models.SimpleQueryBuilder{DB: global.GDB}
-	if err := sqb.Create(&category); err != nil{
-			c.JSON(http.StatusBadRequest, gin.H{
-				"code":    "ERROR",
-				"message": "Record Error",
-				"status":  400,
-				"error":   err.Error(),
-			})
-			return
+	if err := sqb.Create(&category); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code":    "ERROR",
+			"message": "Record Error",
+			"status":  400,
+			"error":   err.Error(),
+		})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -41,7 +46,8 @@ func CreateInventoryCategory(c *gin.Context) {
 	})
 }
 
-
+// Get Inventory Category
+// Expects Category's Id to fetch Category from DB
 func GetInventoryCategory(c *gin.Context) {
 	var category modelsv1.InventoryCategory
 
@@ -82,7 +88,8 @@ func GetInventoryCategory(c *gin.Context) {
 	}
 }
 
-
+// Update Inventory Categories
+// Expects Category's Id in URI and Category fields to be updated in request body
 func UpdateInventoryCategory(c *gin.Context) {
 	var category modelsv1.InventoryCategory
 
@@ -106,8 +113,8 @@ func UpdateInventoryCategory(c *gin.Context) {
 		return
 	}
 
-
-	if err := c.ShouldBindJSON(&category); err != nil {
+	var updateCategory modelsv1.InventoryCategory
+	if err := c.ShouldBindJSON(&updateCategory); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code":    "ERROR",
 			"message": "Validation Errors",
@@ -117,7 +124,7 @@ func UpdateInventoryCategory(c *gin.Context) {
 		return
 	}
 
-	err = sqb.Update(&category, conditions, map[string]interface{}{"description": "updated cat1 desc "})
+	err = sqb.Update(&category, conditions, &updateCategory)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code":    "ERROR",
@@ -133,7 +140,6 @@ func UpdateInventoryCategory(c *gin.Context) {
 			Name:        category.Name,
 			Description: category.Description,
 		}
-		//no errors, return success
 		c.JSON(http.StatusOK, gin.H{
 			"code":   "OK",
 			"status": 200,
@@ -142,7 +148,8 @@ func UpdateInventoryCategory(c *gin.Context) {
 	}
 }
 
-
+// Delete Inventory Categories
+// Expects Category's Id in URI to fetch and delete Category in DB
 func DeleteInventoryCategory(c *gin.Context) {
 	var category modelsv1.InventoryCategory
 	id := c.Params.ByName("id")

@@ -8,6 +8,7 @@ import (
 	modelsV1 "ms-inventory/pkg/models/inventory/v1"
 )
 
+// Establishing mysql connection and returning mysql conn object
 func GormMysql() *gorm.DB {
 	m := config.Mysql{
 		Path:         "127.0.0.1:3306",
@@ -32,10 +33,12 @@ func GormMysql() *gorm.DB {
 	}
 }
 
+// Gorm configuration
 func gormConfig() *gorm.Config {
 	return &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true}
 }
 
+// Mysql migration
 func MysqlTables(db *gorm.DB) {
 	err := db.AutoMigrate(
 		modelsV1.InventoryCategory{},
