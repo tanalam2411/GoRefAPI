@@ -10,6 +10,7 @@ func InitInventoryRouter(rg *gin.RouterGroup) {
 	{
 		inventoryRG.POST("/categories", v1.CreateInventoryCategory)
 		inventoryRG.GET("/category/:id", v1.GetInventoryCategory)
+		inventoryRG.GET("/categories", v1.GetAllInventoryCategory)
 		inventoryRG.PUT("/category/:id", v1.UpdateInventoryCategory)
 		inventoryRG.DELETE("/category/:id", v1.DeleteInventoryCategory)
 	}

@@ -8,7 +8,6 @@ import (
 	"strings"
 )
 
-
 // AND and OR operator, that should be used while building the query
 const (
 	AND = "and"
@@ -104,6 +103,14 @@ func (sqb *SimpleQueryBuilder) Get(modelObject v1.BaseModel, conditions []interf
 	query, args := BuildQuery(conditions)
 	err := sqb.DB.Where(query, args...).First(modelObject).Error
 	return err
+}
+
+func (sqb *SimpleQueryBuilder) GetAll(modelObject v1.BaseModel, conditions []interface{}) *gorm.DB {
+
+	result := sqb.DB.Model(modelObject)
+	query, args := BuildQuery(conditions)
+	result = sqb.DB.Where(query, args...)
+	return result
 }
 
 // update [table] where [condition] set [values]

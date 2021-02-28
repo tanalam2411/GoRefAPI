@@ -2,6 +2,7 @@ package inventory
 
 import (
 	"github.com/gin-gonic/gin"
+	"ms-inventory/config"
 	"ms-inventory/global"
 	"ms-inventory/pkg/models"
 	modelsv1 "ms-inventory/pkg/models/inventory/v1"
@@ -44,6 +45,45 @@ func CreateInventoryCategory(c *gin.Context) {
 		"message": "Record Created",
 		"status":  200,
 	})
+}
+
+// Get All Inventory Categories
+func GetAllInventoryCategory(c *gin.Context) {
+	var category modelsv1.InventoryCategory
+	var conditions []interface{}
+
+	sqb := models.SimpleQueryBuilder{DB: global.GDB}
+	// Conditions can be applied
+	res := sqb.GetAll(&category, conditions)
+	var inventorycategory []modelsv1.InventoryCategory
+	result := res.Limit(1000).Scopes(config.Paginate(c)).Find(&inventorycategory)
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"code":    "ERROR",
+			"message": "Record Error",
+			"status":  400,
+			"error":   result.Error,
+		})
+		return
+	} else {
+		var inventorycategoryview []modelsv1.InventoryCategoryView
+		for _, cat := range inventorycategory {
+			inventorycategoryview = append(inventorycategoryview, modelsv1.InventoryCategoryView{
+				ID:          cat.ID,
+				ParentID:    cat.ParentID,
+				Name:        cat.Name,
+				Description: cat.Description,
+			})
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"code":        "OK",
+			"page":        c.Query("page"),
+			"page_size":   c.Query("page_size"),
+			"results_max": 1,
+			"status":      200,
+			"data":        inventorycategoryview,
+		})
+	}
 }
 
 // Get Inventory Category
